@@ -58,15 +58,30 @@ function canvasApp(){
 	  begin_drawing = false;
     }
 
-    function mouse_moved(ev) {
-	  var x, y;	
-	  // Get the mouse position in the canvas
-	  x = ev.pageX;
-	  y = ev.pageY;
+    // Find the mouse position
+    function findPos(obj) {
+        var curleft = 0, curtop = 0;
+        if (obj.offsetParent) {
+            do {
+                curleft += obj.offsetLeft;
+                curtop += obj.offsetTop;
+            } while (obj = obj.offsetParent);
+            return { x: curleft, y: curtop };
+        }
+        return undefined;
+    };
 
+    function mouse_moved(ev) {
+	  var x, y,pixP,pos;	
+	  // Get the mouse position in the canvas
+      pos = findPos(this);
+	  x = ev.pageX - pos.x;
+	  y = ev.pageY - pos.y;
+      pixP = document.getElementById("brocha");
+      pixP = pixP.value;
 	  if (begin_drawing) {
 	    context.beginPath();
-	    context.arc(x, y, 7, (Math.PI/180)*0, (Math.PI/180)*360, false);
+	    context.arc(x, y, pixP, (Math.PI/180)*0, (Math.PI/180)*360, false);
 	    context.fill();
         context.closePath();
 	  }
